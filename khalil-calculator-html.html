@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khalil's Colorful Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .calculator {
+            width: 400px;
+            background-color: #f3f4f6;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .calculator-header {
+            background-color: #4f46e5;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .calculator-body {
+            padding: 20px;
+        }
+        .display {
+            background-color: white;
+            padding: 20px;
+            text-align: right;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .btn {
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .btn-number { background-color: #3b82f6; color: white; }
+        .btn-number:hover { background-color: #2563eb; }
+        .btn-operation { background-color: #10b981; color: white; }
+        .btn-operation:hover { background-color: #059669; }
+        .btn-advanced { background-color: #8b5cf6; color: white; }
+        .btn-advanced:hover { background-color: #7c3aed; }
+        .btn-special { background-color: #f59e0b; color: white; }
+        .btn-special:hover { background-color: #d97706; }
+        .btn-control { background-color: #ef4444; color: white; }
+        .btn-control:hover { background-color: #dc2626; }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="calculator-header">Khalil's Colorful Calculator</div>
+        <div class="calculator-body">
+            <div class="display" id="display">0</div>
+            <div class="buttons">
+                <button class="btn btn-number" onclick="appendToDisplay('7')">7</button>
+                <button class="btn btn-number" onclick="appendToDisplay('8')">8</button>
+                <button class="btn btn-number" onclick="appendToDisplay('9')">9</button>
+                <button class="btn btn-operation" onclick="setOperation('+')">+</button>
+                
+                <button class="btn btn-number" onclick="appendToDisplay('4')">4</button>
+                <button class="btn btn-number" onclick="appendToDisplay('5')">5</button>
+                <button class="btn btn-number" onclick="appendToDisplay('6')">6</button>
+                <button class="btn btn-operation" onclick="setOperation('-')">-</button>
+                
+                <button class="btn btn-number" onclick="appendToDisplay('1')">1</button>
+                <button class="btn btn-number" onclick="appendToDisplay('2')">2</button>
+                <button class="btn btn-number" onclick="appendToDisplay('3')">3</button>
+                <button class="btn btn-operation" onclick="setOperation('*')">*</button>
+                
+                <button class="btn btn-number" onclick="appendToDisplay('0')">0</button>
+                <button class="btn btn-number" onclick="appendToDisplay('.')">.</button>
+                <button class="btn btn-control" onclick="calculate()">=</button>
+                <button class="btn btn-operation" onclick="setOperation('/')">/</button>
+                
+                <button class="btn btn-control" onclick="clearDisplay()">C</button>
+                <button class="btn btn-special" onclick="appendToDisplay('(')">(</button>
+                <button class="btn btn-special" onclick="appendToDisplay(')')">)</button>
+                <button class="btn btn-advanced" onclick="calculateAdvanced('x^2')">x²</button>
+                
+                <button class="btn btn-advanced" onclick="calculateAdvanced('log')">log</button>
+                <button class="btn btn-advanced" onclick="calculateAdvanced('ln')">ln</button>
+                <button class="btn btn-advanced" onclick="calculateAdvanced('sin')">sin</button>
+                <button class="btn btn-advanced" onclick="calculateAdvanced('cos')">cos</button>
+                
+                <button class="btn btn-advanced" onclick="calculateAdvanced('tan')">tan</button>
+                <button class="btn btn-advanced" onclick="calculateAdvanced('sqrt')">√</button>
+                <button class="btn btn-special" onclick="appendToDisplay(Math.PI)">π</button>
+                <button class="btn btn-special" onclick="appendToDisplay(Math.E)">e</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let display = document.getElementById('display');
+        let currentValue = '0';
+        let previousValue = null;
+        let operation = null;
+
+        function updateDisplay() {
+            display.textContent = currentValue;
+        }
+
+        function appendToDisplay(value) {
+            if (currentValue === '0' && value !== '.') {
+                currentValue = value;
+            } else {
+                currentValue += value;
+            }
+            updateDisplay();
+        }
+
+        function clearDisplay() {
+            currentValue = '0';
+            previousValue = null;
+            operation = null;
+            updateDisplay();
+        }
+
+        function setOperation(op) {
+            previousValue = parseFloat(currentValue);
+            operation = op;
+            currentValue = '0';
+        }
+
+        function calculate() {
+            if (previousValue !== null && operation !== null) {
+                const current = parseFloat(currentValue);
+                let result;
+                switch (operation) {
+                    case '+': result = previousValue + current; break;
+                    case '-': result = previousValue - current; break;
+                    case '*': result = previousValue * current; break;
+                    case '/': result = previousValue / current; break;
+                }
+                currentValue = result.toString();
+                previousValue = null;
+                operation = null;
+                updateDisplay();
+            }
+        }
+
+        function calculateAdvanced(op) {
+            const current = parseFloat(currentValue);
+            let result;
+            switch (op) {
+                case 'log': result = Math.log10(current); break;
+                case 'ln': result = Math.log(current); break;
+                case 'sin': result = Math.sin(current); break;
+                case 'cos': result = Math.cos(current); break;
+                case 'tan': result = Math.tan(current); break;
+                case 'sqrt': result = Math.sqrt(current); break;
+                case 'x^2': result = Math.pow(current, 2); break;
+            }
+            currentValue = result.toString();
+            updateDisplay();
+        }
+
+        updateDisplay();
+    </script>
+</body>
+</html>
